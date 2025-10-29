@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "Tab Domain Grouper",
+  "version": "1.0.0",
+  "description": "Read URLs of open tabs in the current window and group them by domain.",
+  "permissions": ["tabs", "tabGroups"],
+  "action": {
+    "default_title": "Group tabs by domain",
+    "default_popup": "popup.html"
+  }
+}
+

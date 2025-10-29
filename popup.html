@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tab Domain Grouper</title>
+  <link rel="stylesheet" href="popup.css">
+  <style>
+    /* Fallback minimal styles if CSS fails to load */
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 12px; width: 420px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Tabs by Domain</h1>
+    <div>
+      <button id="refresh" title="Refresh list">↻</button>
+      <button id="group" title="Create Chrome Tab Groups by domain">Group</button>
+    </div>
+  </header>
+  <section id="summary"></section>
+  <section id="groups" aria-live="polite"></section>
+  <template id="group-template">
+    <details class="group" open>
+      <summary class="group-header">
+        <span class="domain"></span>
+        <span class="count"></span>
+      </summary>
+      <ul class="tabs"></ul>
+    </details>
+  </template>
+  <script src="popup.js" defer></script>
+  </body>
+  </html>
+
