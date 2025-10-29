@@ -18,6 +18,14 @@
       <button id="group" title="Create Chrome Tab Groups by domain">Group</button>
     </div>
   </header>
+  <section class="options">
+    <label title="Query tabs from all Chrome windows">
+      <input type="checkbox" id="all-windows" /> All windows
+    </label>
+    <label title="If a domain has more than this many tabs, move them to a new window">
+      Threshold: <input id="threshold" type="number" min="1" step="1" value="20" />
+    </label>
+  </section>
   <section id="summary"></section>
   <section id="groups" aria-live="polite"></section>
   <template id="group-template">

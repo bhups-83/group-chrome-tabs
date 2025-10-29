@@ -1,5 +1,6 @@
-async function queryCurrentWindowTabs() {
-  const tabs = await chrome.tabs.query({ currentWindow: true });
+async function queryTabs(includeAllWindows) {
+  const queryInfo = includeAllWindows ? {} : { currentWindow: true };
+  const tabs = await chrome.tabs.query(queryInfo);
   return tabs.filter(t => !!t.url);
 }
 
@@ -72,7 +73,8 @@ function renderGroups(domainToTabs) {
 
 async function refresh() {
   try {
-    const tabs = await queryCurrentWindowTabs();
+    const includeAllWindows = document.getElementById('all-windows').checked;
+    const tabs = await queryTabs(includeAllWindows);
     const groups = groupTabsByDomain(tabs);
     renderGroups(groups);
   } catch (err) {
@@ -90,10 +92,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function groupIntoChromeTabGroups() {
-  const tabs = await queryCurrentWindowTabs();
+  const includeAllWindows = document.getElementById('all-windows').checked;
+  const thresholdInput = /** @type {HTMLInputElement} */ (document.getElementById('threshold'));
+  const threshold = Math.max(1, parseInt(thresholdInput?.value || '20', 10) || 20);
+
+  const tabs = await queryTabs(includeAllWindows);
   const domainToTabs = groupTabsByDomain(tabs);
-  const windowId = tabs[0]?.windowId;
-  if (windowId == null) return;
 
   const colors = [
     'blue', 'red', 'yellow', 'green', 'pink', 'purple', 'cyan', 'orange'
@@ -102,16 +106,63 @@ async function groupIntoChromeTabGroups() {
   let colorIndex = 0;
   const sortedDomains = [...domainToTabs.keys()].sort((a, b) => a.localeCompare(b));
   for (const domain of sortedDomains) {
-    const tabIds = domainToTabs.get(domain).map(t => t.id).filter(Boolean);
+    const domainTabs = domainToTabs.get(domain);
+    const tabIds = domainTabs.map(t => t.id).filter(Boolean);
     if (tabIds.length === 0) continue;
-    try {
-      const groupId = await chrome.tabs.group({ tabIds, createProperties: { windowId } });
-      const color = colors[colorIndex++ % colors.length];
-      await chrome.tabGroups.update(groupId, { title: domain, color });
-    } catch (_) {
-      // Ignore grouping errors
+
+    if (tabIds.length > threshold) {
+      // Move to a new window, then group there
+      try {
+        const newWin = await chrome.windows.create({});
+        await chrome.tabs.move(tabIds, { windowId: newWin.id, index: -1 });
+        const groupId = await chrome.tabs.group({ tabIds, createProperties: { windowId: newWin.id } });
+        const color = colors[colorIndex++ % colors.length];
+        await chrome.tabGroups.update(groupId, { title: domain, color });
+      } catch (_) {
+        // Ignore errors
+      }
+    } else {
+      // Consolidate same-domain tabs into a single window: pick the window
+      // that already contains the most tabs for this domain, move the rest there,
+      // then create a single tab group for the domain in that window.
+      const tabsByWindow = new Map();
+      for (const t of domainTabs) {
+        const arr = tabsByWindow.get(t.windowId) || [];
+        arr.push(t);
+        tabsByWindow.set(t.windowId, arr);
+      }
+
+      // Choose target window: window with the maximum number of this domain's tabs
+      let targetWindowId = null;
+      let maxCount = -1;
+      for (const [winId, winTabs] of tabsByWindow.entries()) {
+        if (winTabs.length > maxCount) {
+          maxCount = winTabs.length;
+          targetWindowId = winId;
+        }
+      }
+      if (targetWindowId == null) {
+        // Fallback: use the window of the first tab
+        targetWindowId = domainTabs[0].windowId;
+      }
+
+      // Move tabs not in target window into target window
+      const toMove = domainTabs.filter(t => t.windowId !== targetWindowId).map(t => t.id).filter(Boolean);
+      try {
+        if (toMove.length > 0) {
+          await chrome.tabs.move(toMove, { windowId: targetWindowId, index: -1 });
+        }
+        const groupId = await chrome.tabs.group({ tabIds, createProperties: { windowId: targetWindowId } });
+        const color = colors[colorIndex++ % colors.length];
+        await chrome.tabGroups.update(groupId, { title: domain, color });
+      } catch (_) {
+        // Ignore errors
+      }
     }
   }
+
+  // Rerender with current options
+  refresh();
 }
 
 document.getElementById('group').addEventListener('click', () => {
