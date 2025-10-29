@@ -64,6 +64,25 @@ h1 {
 
 #group { margin-left: 6px; }
 
+#group-active-panel {
+  margin: 8px 0 12px 0;
+}
+
+#group-active-panel .panel {
+  border: 1px solid rgba(127,127,127,0.3);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+#group-active-panel .row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 6px 0;
+}
+
+#group-active-panel .row.actions { justify-content: flex-end; }
+
 #summary {
   font-size: 12px;
   color: color-mix(in oklab, currentColor 70%, transparent);
@@ -83,6 +102,8 @@ h1 {
   padding: 8px 10px;
   font-weight: 600;
 }
+
+/* removed per-domain action buttons */
 
 .tabs {
   list-style: none;

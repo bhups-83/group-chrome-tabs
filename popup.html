@@ -16,8 +16,25 @@
     <div>
       <button id="refresh" title="Refresh list">↻</button>
       <button id="group" title="Create Chrome Tab Groups by domain">Group</button>
+      <button id="group-active" title="Add the current tab to an existing or new tab group">Group current tab…</button>
     </div>
   </header>
+  <section id="group-active-panel" hidden>
+    <div class="panel">
+      <div class="row">
+        <label for="group-select">Add current tab to</label>
+        <select id="group-select"></select>
+      </div>
+      <div class="row" id="group-title-row">
+        <label for="group-title">Title</label>
+        <input id="group-title" type="text" />
+      </div>
+      <div class="row actions">
+        <button id="group-active-confirm">Add</button>
+        <button id="group-active-cancel">Cancel</button>
+      </div>
+    </div>
+  </section>
   <section class="options">
     <label title="Query tabs from all Chrome windows">
       <input type="checkbox" id="all-windows" /> All windows
