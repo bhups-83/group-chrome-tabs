@@ -26,6 +26,20 @@
       Threshold: <input id="threshold" type="number" min="1" step="1" value="20" />
     </label>
   </section>
+  <details class="merge-rules">
+    <summary>Domain merge rules</summary>
+    <p class="hint">One group per line. Use either:
+      <br/>- <code>label: a.com, b.com, c.com</code>
+      <br/>- <code>a.com, b.com, c.com</code> (label = first domain)
+      <br/>- Regex supported: <code>label: /.*\\.google\\.com$/i</code>
+      <br/>- Wildcards supported: <code>*.knowl.io</code> or <code>.knowl.io</code>
+    </p>
+    <textarea id="merge-rules" rows="5" placeholder="work: mail.google.com, calendar.google.com
+youtube.com, music.youtube.com"></textarea>
+    <div class="merge-actions">
+      <button id="save-merge-rules">Save rules</button>
+    </div>
+  </details>
   <section id="summary"></section>
   <section id="groups" aria-live="polite"></section>
   <template id="group-template">
