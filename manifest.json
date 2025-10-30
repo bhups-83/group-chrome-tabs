@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Tabstract",
   "version": "1.0.0",
-  "description": "Read URLs of open tabs in the current window and group them by domain.",
+  "description": "Automatically groups your Chrome tabs by domain and custom rules — stay organised effortlessly.",
   "icons": {
     "16": "assets/icon-16.png",
     "32": "assets/icon-32.png",
