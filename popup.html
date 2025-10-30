@@ -12,10 +12,13 @@
 </head>
 <body>
   <header>
-    <h1>Tabs by Domain</h1>
+    <h1>
+      <img id="brand-logo" src="assets/icon-32.png" alt="Tabstract" width="16" height="16" onerror="this.style.display='none'" />
+      Tabs by Domain
+    </h1>
     <div>
       <button id="refresh" title="Refresh list">↻</button>
-      <button id="group" title="Create Chrome Tab Groups by domain">Group</button>
+      <span id="group-buttons"></span>
       <button id="group-active" title="Add the current tab to an existing or new tab group">Group current tab…</button>
     </div>
   </header>
@@ -41,6 +44,9 @@
     </label>
     <label title="If a domain has more than this many tabs, move them to a new window">
       Threshold: <input id="threshold" type="number" min="1" step="1" value="20" />
+    </label>
+    <label title="Show tab listing and debug info in popup">
+      <input type="checkbox" id="dev-mode" /> Dev mode
     </label>
   </section>
   <details class="merge-rules">

@@ -1,7 +1,14 @@
+function isSkippableTab(tab) {
+  const u = (tab?.url || '').toLowerCase();
+  if (!u) return true;
+  // Skip new tab and blank internal pages
+  return u.startsWith('chrome://newtab') || u.startsWith('chrome://new-tab-page') || u === 'about:blank';
+}
+
 async function queryTabs(includeAllWindows) {
   const queryInfo = includeAllWindows ? {} : { currentWindow: true };
   const tabs = await chrome.tabs.query(queryInfo);
-  return tabs.filter(t => !!t.url);
+  return tabs.filter(t => !!t.url && !isSkippableTab(t));
 }
 
 function extractHostname(urlString) {
@@ -202,8 +209,34 @@ async function saveMergeRulesText(text) {
   });
 }
 
+async function loadDevMode() {
+  return new Promise(resolve => {
+    try {
+      chrome.storage.sync.get({ devMode: false }, (res) => resolve(Boolean(res.devMode)));
+    } catch (_) {
+      resolve(false);
+    }
+  });
+}
+
+async function saveDevMode(value) {
+  return new Promise((resolve) => {
+    try { chrome.storage.sync.set({ devMode: Boolean(value) }, () => resolve()); }
+    catch (_) { resolve(); }
+  });
+}
+
 async function refresh() {
   try {
+    const devMode = document.getElementById('dev-mode').checked;
+    const groupsContainer = document.getElementById('groups');
+    const summaryEl = document.getElementById('summary');
+    if (!devMode) {
+      // Hide listing in non-dev mode
+      groupsContainer.textContent = '';
+      summaryEl.textContent = '';
+      return;
+    }
     const includeAllWindows = document.getElementById('all-windows').checked;
     const [tabs, rulesText] = await Promise.all([
       queryTabs(includeAllWindows),
@@ -226,19 +259,21 @@ document.getElementById('refresh').addEventListener('click', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
   // Load merge rules text into textarea
-  loadMergeRulesText().then((text) => {
+  Promise.all([loadMergeRulesText(), loadDevMode()]).then(([text, dev]) => {
     const ta = document.getElementById('merge-rules');
     if (ta) ta.value = text;
+    const dm = document.getElementById('dev-mode');
+    if (dm) dm.checked = Boolean(dev);
   }).finally(() => refresh());
+  renderGroupButtons();
 });
 
-async function groupIntoChromeTabGroups() {
-  const includeAllWindows = document.getElementById('all-windows').checked;
+async function groupIntoChromeTabGroups(includeAllWindows) {
   const thresholdInput = /** @type {HTMLInputElement} */ (document.getElementById('threshold'));
   const threshold = Math.max(1, parseInt(thresholdInput?.value || '20', 10) || 20);
 
   const [tabs, rulesText] = await Promise.all([
-    queryTabs(includeAllWindows),
+    queryTabs(Boolean(includeAllWindows)),
     loadMergeRulesText()
   ]);
   const rules = parseMergeRules(rulesText);
@@ -378,6 +413,24 @@ document.getElementById('save-merge-rules').addEventListener('click', async () =
   await refresh();
 });
 
+document.getElementById('dev-mode').addEventListener('change', async (e) => {
+  const checked = /** @type {HTMLInputElement} */ (e.target).checked;
+  await saveDevMode(checked);
+  await refresh();
+});
+
+// Show/hide merge rules under Dev mode
+async function toggleDevPanelsVisibility() {
+  try {
+    const devMode = document.getElementById('dev-mode').checked;
+    const rules = document.querySelector('.merge-rules');
+    if (rules) rules.hidden = !devMode;
+  } catch (_) {}
+}
+
+document.getElementById('dev-mode').addEventListener('change', toggleDevPanelsVisibility);
+document.addEventListener('DOMContentLoaded', toggleDevPanelsVisibility);
+
 // Header CTA: group the current active tab in current window
 document.getElementById('group-active').addEventListener('click', async () => {
   const panel = document.getElementById('group-active-panel');
@@ -447,8 +500,28 @@ document.getElementById('group-active').addEventListener('click', async () => {
   }
 });
 
-document.getElementById('group').addEventListener('click', () => {
-  groupIntoChromeTabGroups();
-});
+async function renderGroupButtons() {
+  const container = document.getElementById('group-buttons');
+  container.textContent = '';
+  try {
+    const wins = await chrome.windows.getAll();
+    const makeBtn = (id, label, handler) => {
+      const b = document.createElement('button');
+      b.id = id;
+      b.textContent = label;
+      b.title = label;
+      b.addEventListener('click', handler);
+      return b;
+    };
+    if (wins.length <= 1) {
+      container.appendChild(makeBtn('group-current-window', 'Group tabs', () => groupIntoChromeTabGroups(false)));
+    } else {
+      container.appendChild(makeBtn('group-current-window', 'Group tabs (current window)', () => groupIntoChromeTabGroups(false)));
+      container.appendChild(makeBtn('group-all-windows', 'Group tabs (all windows)', () => groupIntoChromeTabGroups(true)));
+    }
+  } catch (_) {
+    // ignore
+  }
+}
 
 

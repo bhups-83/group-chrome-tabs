@@ -1,4 +1,4 @@
-Tab Domain Grouper (Chrome Extension)
+Tabstract (Chrome Extension)
 
 Read URLs of all open tabs in the current window and group them by domain.
 
@@ -26,4 +26,18 @@ Files
 - popup.html: Popup UI scaffold.
 - popup.css: Styles for the popup.
 - popup.js: Logic to query tabs and group by domain.
+- assets/: Place `icon-16.png`, `icon-32.png`, `icon-48.png`, `icon-128.png` here.
+
+Create icons from a base logo (Linux)
+
+If you have a base PNG/SVG logo, you can generate required sizes with ImageMagick:
+
+```bash
+cd /home/bhups/tools/tabs
+mkdir -p assets
+convert logo.png -resize 128x128 assets/icon-128.png
+convert logo.png -resize 48x48   assets/icon-48.png
+convert logo.png -resize 32x32   assets/icon-32.png
+convert logo.png -resize 16x16   assets/icon-16.png
+```
 
