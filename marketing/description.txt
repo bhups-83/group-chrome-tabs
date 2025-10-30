@@ -1,0 +1,28 @@
+🧩 Tabstract – Smart Tab Manager for Automatic Tab Grouping
+
+Tired of endless open tabs cluttering your browser? Tabstract is a powerful yet minimal tab manager that automatically groups your tabs by domain, website, or custom rules — keeping your workspace clean and distraction-free.
+
+🚀 Auto Tab Grouping
+
+Say goodbye to manually organising your tabs. Tabstract automatically detects related websites and groups them together — Gmail, YouTube, Docs, Slack, and more — so your tabs always stay neat and organised.
+
+⚙️ Custom Grouping Rules
+
+Define how your tabs are organised. Create simple or advanced grouping rules using keywords, URL patterns, or specific domains. Whether you want to group all your work tools or personal browsing, Tabstract adapts to your workflow.
+
+🌈 Boost Focus and Productivity
+
+A cluttered browser can slow you down. Tabstract helps you stay focused, reduce tab overload, and boost productivity by giving you a structured view of your browsing session — no more hunting through dozens of tabs.
+
+🧠 Minimal, Modern, and Fast
+
+Built with performance and simplicity in mind, Tabstract runs quietly in the background. Its clean design and lightweight architecture make it feel like a natural extension of Chrome itself.
+
+💻 Perfect For
+
+- Professionals managing multiple projects
+- Students conducting online research
+- Developers juggling docs, code, and tools
+- Anyone who wants a clean, organised browsing experience
+
+Simplify your browsing. Organise your chaos. Stay productive with Tabstract — your intelligent, automatic tab manager for Chrome.
