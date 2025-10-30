@@ -7,19 +7,19 @@
   <link rel="stylesheet" href="popup.css">
   <style>
     /* Fallback minimal styles if CSS fails to load */
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 12px; width: 420px; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 12px; width: 300px; }
   </style>
 </head>
 <body>
   <header>
     <h1>
       <img id="brand-logo" src="assets/icon-32.png" alt="Tabstract" width="16" height="16" onerror="this.style.display='none'" />
-      Tabs by Domain
+      Tabstract
     </h1>
-    <div>
-      <button id="refresh" title="Refresh list">↻</button>
+    <div class="actions">
+      <button id="refresh" class="dev-only btn" title="Refresh list">Refresh list</button>
       <span id="group-buttons"></span>
-      <button id="group-active" title="Add the current tab to an existing or new tab group">Group current tab…</button>
+      <button id="group-active" class="btn" title="Add the current tab to an existing or new tab group">Group current tab…</button>
     </div>
   </header>
   <section id="group-active-panel" hidden>
@@ -39,10 +39,10 @@
     </div>
   </section>
   <section class="options">
-    <label title="Query tabs from all Chrome windows">
+    <label class="dev-only" title="Query tabs from all Chrome windows">
       <input type="checkbox" id="all-windows" /> All windows
     </label>
-    <label title="If a domain has more than this many tabs, move them to a new window">
+    <label class="dev-only" title="If a domain has more than this many tabs, move them to a new window">
       Threshold: <input id="threshold" type="number" min="1" step="1" value="20" />
     </label>
     <label title="Show tab listing and debug info in popup">

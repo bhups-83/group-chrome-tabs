@@ -6,15 +6,56 @@ body {
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   margin: 0;
   padding: 12px;
-  width: 420px;
+  width: 300px;
+  background: #eff6ff; /* light blue background */
 }
 
 header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: stretch;
   gap: 8px;
   margin-bottom: 8px;
+}
+#group-buttons { display: flex; flex-direction: column; gap: 6px; }
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.actions button, #group-buttons button, #refresh, #group-active, .btn {
+  appearance: none;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(0,0,0,0.06)) ,
+              #2563eb; /* blue-600 base */
+  color: white;
+  padding: 10px 12px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+  transition: box-shadow 120ms ease, transform 60ms ease, background 120ms ease, outline-color 120ms ease;
+  font-size: 14px;
+}
+
+.actions button:hover, #group-buttons button:hover, #refresh:hover, #group-active:hover, .btn:hover {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  background: linear-gradient(180deg, rgba(255,255,255,0.24), rgba(0,0,0,0.08)) ,
+              #1d4ed8; /* blue-700 */
+}
+
+.actions button:active, #group-buttons button:active, #refresh:active, #group-active:active, .btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+}
+
+.actions button:focus-visible, #group-buttons button:focus-visible, #refresh:focus-visible, #group-active:focus-visible, .btn:focus-visible {
+  outline: 2px solid #93c5fd; /* blue-300 */
+  outline-offset: 2px;
 }
 
 h1 {
@@ -57,15 +98,7 @@ h1 {
   margin-top: 8px;
 }
 
-.controls button, #refresh, #group {
-  border: 1px solid rgba(127,127,127,0.4);
-  border-radius: 6px;
-  background: transparent;
-  padding: 4px 8px;
-  cursor: pointer;
-}
 
-#group { margin-left: 6px; }
 
 #group-active-panel {
   margin: 8px 0 12px 0;

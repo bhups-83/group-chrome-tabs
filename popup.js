@@ -425,6 +425,8 @@ async function toggleDevPanelsVisibility() {
     const devMode = document.getElementById('dev-mode').checked;
     const rules = document.querySelector('.merge-rules');
     if (rules) rules.hidden = !devMode;
+    const devOnly = document.querySelectorAll('.dev-only');
+    devOnly.forEach(el => { el.hidden = !devMode; });
   } catch (_) {}
 }
 
@@ -510,6 +512,7 @@ async function renderGroupButtons() {
       b.id = id;
       b.textContent = label;
       b.title = label;
+      b.className = 'btn';
       b.addEventListener('click', handler);
       return b;
     };
